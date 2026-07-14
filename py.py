@@ -1,27 +1,41 @@
 
 import os
-
+from dotenv import load_dotenv
 from groq import Groq
+
+load_dotenv()
 
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
  )
+        
+def chat(temperature=1):
+ 
+ while True:
 
-def chat():
+    user_input = input("Enter (or press # to end): ")
 
- prompt = input("Enter: ")
+    if user_input == "#":
+       break
+       
 
- chat_completion = client.chat.completions.create(
-    messages=[
+    chat_completion = client.chat.completions.create(
+      messages=[
         {
-            "role": "user",
-            "content": prompt ,
+           "role" : "user",
+           "content" : user_input
         }
-    ],
-    model="llama-3.3-70b-versatile",
- )
-
- print(chat_completion.choices[0].message.content)
+       ],
+      model="llama-3.3-70b-versatile",
+      temperature=temperature,
+      max_tokens=20
+       )
+        
+    print(chat_completion.choices[0].message.content)
+    print("#-----------------------------------------#")
+    print(chat_completion.usage)
+    print("#-----------------------------------------#")
+    
 
 while True: 
 
