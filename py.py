@@ -11,6 +11,8 @@ client = Groq(
         
 def chat(temperature=1):
  
+ conversation_history = []
+
  while True:
 
     user_input = input("Enter (or press # to end): ")
@@ -18,20 +20,19 @@ def chat(temperature=1):
     if user_input == "#":
        break
        
+    conversation_history.append({"role": "user", "content": user_input})
 
     chat_completion = client.chat.completions.create(
-      messages=[
-        {
-           "role" : "user",
-           "content" : user_input
-        }
-       ],
-      model="llama-3.3-70b-versatile",
-      temperature=temperature,
-      max_tokens=20
-       )
-        
+      
+     messages = conversation_history,
+       
+        model="llama-3.3-70b-versatile",
+        temperature=temperature
+    )
+    
+
     print(chat_completion.choices[0].message.content)
+    conversation_history.append({"role" : "assistant", "content" : chat_completion.choices[0].message.content})
     print("#-----------------------------------------#")
     print(chat_completion.usage)
     print("#-----------------------------------------#")
